@@ -243,17 +243,7 @@ body::before {
 }
 
 .cursor {
-    display: inline-block;
-    width: 8px;
-    height: 18px;
-    background: var(--green);
-    animation: blink 1s step-end infinite;
-    margin-left: -8px;
-    opacity: 0;
-}
-
-#command-input:focus + .cursor {
-    opacity: 1;
+    display: none;
 }
 
 @keyframes blink {

@@ -10,15 +10,12 @@ let commandHistory = [];
 let historyIndex = -1;
 
 // ASCII Art Logo
-const ASCII_LOGO = `
-<span class="ascii-art">
- ██████╗ ██████╗ ██╗██╗   ██╗ █████╗ ███╗   ██╗███████╗██╗  ██╗██╗   ██╗
+const ASCII_LOGO = `<span class="ascii-art"> ██████╗ ██████╗ ██╗██╗   ██╗ █████╗ ███╗   ██╗███████╗██╗  ██╗██╗   ██╗
  ██╔══██╗██╔══██╗██║╚██╗ ██╔╝██╔══██╗████╗  ██║██╔════╝██║  ██║██║   ██║
  ██████╔╝██████╔╝██║ ╚████╔╝ ███████║██╔██╗ ██║███████╗███████║██║   ██║
  ██╔═══╝ ██╔══██╗██║  ╚██╔╝  ██╔══██║██║╚██╗██║╚════██║██╔══██║██║   ██║
  ██║     ██║  ██║██║   ██║   ██║  ██║██║ ╚████║███████║██║  ██║╚██████╔╝
- ╚═╝     ╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝ 
-</span>`;
+ ╚═╝     ╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝</span>`;
 
 const SMALL_LOGO = `
 <span class="ascii-art">
@@ -102,10 +99,10 @@ ${ASCII_LOGO}
 <p class="text-fg" style="margin-top: 10px;">I build <span class="text-magenta">production-grade platforms</span> with deep experience in:</p>
 
 <div style="margin: 15px 0;">
-    <div class="list-item"><span class="text-blue">Golang</span> systems & high-performance APIs</div>
-    <div class="list-item"><span class="text-cyan">Next.js & TypeScript</span> modern frontends</div>
-    <div class="list-item"><span class="text-orange">AWS</span> cloud architecture</div>
-    <div class="list-item"><span class="text-green">AI/LLM</span> integration & products</div>
+    <div class="list-item text-fg"><span class="text-blue">Golang</span> systems & high-performance APIs</div>
+    <div class="list-item text-fg"><span class="text-cyan">Next.js & TypeScript</span> modern frontends</div>
+    <div class="list-item text-fg"><span class="text-orange">AWS</span> cloud architecture</div>
+    <div class="list-item text-fg"><span class="text-green">AI/LLM</span> integration & products</div>
 </div>
 
 <p class="text-comment" style="margin-top: 15px;">
@@ -329,10 +326,10 @@ and built things that ship, scale, and make money. 💰
 <div class="section-header">🏆 Achievements & Recognition</div>
 
 <div style="margin: 15px 0;">
-    <div class="badge"><span class="badge-icon">🏆</span> <span class="text-yellow">Winner</span> — Solana HackDay @ IIIT Delhi <span class="text-comment">(200+ teams)</span></div>
-    <div class="badge"><span class="badge-icon">🥇</span> <span class="text-yellow">1st Prize</span> — Amity CyberCup</div>
-    <div class="badge"><span class="badge-icon">🥉</span> <span class="text-orange">3rd Prize</span> — Hack KRMU 2.0</div>
-    <div class="badge"><span class="badge-icon">🎓</span> <span class="text-cyan">Top 5% Scholarship</span> — NSUT</div>
+    <div class="badge text-fg"><span class="badge-icon">🏆</span> <span class="text-yellow">Winner</span> — Solana HackDay @ IIIT Delhi <span class="text-comment">(200+ teams)</span></div>
+    <div class="badge text-fg"><span class="badge-icon">🥇</span> <span class="text-yellow">1st Prize</span> — Amity CyberCup</div>
+    <div class="badge text-fg"><span class="badge-icon">🥉</span> <span class="text-orange">3rd Prize</span> — Hack KRMU 2.0</div>
+    <div class="badge text-fg"><span class="badge-icon">🎓</span> <span class="text-cyan">Top 5% Scholarship</span> — NSUT</div>
 </div>
 
 <div class="section-header" style="margin-top: 25px;">🎖️ Leadership & Community</div>
@@ -768,8 +765,11 @@ ${SMALL_LOGO}
     <span class="suggestion" onclick="runCommand('skills')">skills</span>
     <span class="suggestion" onclick="runCommand('experience')">experience</span>
     <span class="suggestion" onclick="runCommand('projects')">projects</span>
+    <span class="suggestion" onclick="runCommand('achievements')">achievements</span>
+    <span class="suggestion" onclick="runCommand('education')">education</span>
     <span class="suggestion" onclick="runCommand('contact')">contact</span>
     <span class="suggestion" onclick="runCommand('neofetch')">neofetch</span>
+    <span class="suggestion" onclick="runCommand('whoami')">whoami</span>
 </div>
 `);
                     input.focus();
