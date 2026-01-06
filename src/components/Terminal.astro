@@ -1,0 +1,1026 @@
+---
+interface Props {
+  commandsData: string;
+}
+
+const { commandsData } = Astro.props;
+---
+
+<div class="terminal-container">
+  <div class="terminal-header">
+    <div class="terminal-buttons">
+      <span class="btn close"></span>
+      <span class="btn minimize"></span>
+      <span class="btn maximize"></span>
+    </div>
+    <div class="terminal-title">priyanshu@dev: ~/portfolio</div>
+    <div class="terminal-tabs">
+      <span class="tab active">zsh</span>
+    </div>
+  </div>
+
+  <div class="terminal-body" id="terminal">
+    <div class="output" id="output"></div>
+    <div class="input-line">
+      <span class="prompt">
+        <span class="user">priyanshu</span><span class="at">@</span><span
+          class="host">dev</span>
+        <span class="colon">:</span><span class="path">~</span><span
+          class="dollar">$</span>
+      </span>
+      <input
+        type="text"
+        id="command-input"
+        autofocus
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <span class="cursor"></span>
+    </div>
+  </div>
+
+  <div class="terminal-statusbar">
+    <span class="status-left">
+      <span class="git-branch">⎇ main</span>
+      <span class="separator">|</span>
+      <span class="lang">Go TypeScript React</span>
+    </span>
+    <span class="status-right">
+      <span class="help-hint"
+        >Type <span class="cmd">help</span> for commands</span
+      >
+    </span>
+  </div>
+</div>
+
+<script is:inline define:vars={{ commandsData }}>
+  // Parse the commands data passed from Astro
+  const COMMANDS_DATA = JSON.parse(commandsData);
+
+  const terminal = document.getElementById("terminal");
+  const output = document.getElementById("output");
+  const input = document.getElementById("command-input");
+
+  // Command history
+  let commandHistory = [];
+  let historyIndex = -1;
+
+  // ASCII Art Logo
+  const ASCII_LOGO = `<span class="ascii-art"> ██████╗ ██████╗ ██╗██╗   ██╗ █████╗ ███╗   ██╗███████╗██╗  ██╗██╗   ██╗
+ ██╔══██╗██╔══██╗██║╚██╗ ██╔╝██╔══██╗████╗  ██║██╔════╝██║  ██║██║   ██║
+ ██████╔╝██████╔╝██║ ╚████╔╝ ███████║██╔██╗ ██║███████╗███████║██║   ██║
+ ██╔═══╝ ██╔══██╗██║  ╚██╔╝  ██╔══██║██║╚██╗██║╚════██║██╔══██║██║   ██║
+ ██║     ██║  ██║██║   ██║   ██║  ██║██║ ╚████║███████║██║  ██║╚██████╔╝
+ ╚═╝     ╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝</span>`;
+
+  const SMALL_LOGO = `
+<span class="ascii-art">
+    ____       _                       __         
+   / __ \\_____(_)_  ______ _____  ____/ /_  __  __
+  / /_/ / ___/ / / / / __ \`/ __ \\/ __  / / / / / /
+ / ____/ /  / / /_/ / /_/ / / / / /_/ / /_/ / /_/ 
+/_/   /_/  /_/\\__, /\\__,_/_/ /_/\\__,_/\\__,_/\\__,_/
+             /____/                               
+</span>`;
+
+  // Build commands from data
+  const commands = {
+    help: () => `
+<div class="section-header">⚡ Available Commands</div>
+<div class="suggestions">
+    <span class="suggestion" onclick="runCommand('about')">about</span>
+    <span class="suggestion" onclick="runCommand('skills')">skills</span>
+    <span class="suggestion" onclick="runCommand('experience')">experience</span>
+    <span class="suggestion" onclick="runCommand('projects')">projects</span>
+    <span class="suggestion" onclick="runCommand('achievements')">achievements</span>
+    <span class="suggestion" onclick="runCommand('education')">education</span>
+    <span class="suggestion" onclick="runCommand('contact')">contact</span>
+    <span class="suggestion" onclick="runCommand('neofetch')">neofetch</span>
+    <span class="suggestion" onclick="runCommand('whoami')">whoami</span>
+    <span class="suggestion" onclick="runCommand('clear')">clear</span>
+</div>
+
+<div class="table" style="margin-top: 15px;">
+    <div class="table-row">
+        <span class="table-key">about</span>
+        <span class="table-value">Learn about me and what I do</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">skills</span>
+        <span class="table-value">View my technical skills & stack</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">experience</span>
+        <span class="table-value">Professional work experience</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">projects</span>
+        <span class="table-value">Featured side projects</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">achievements</span>
+        <span class="table-value">Awards, hackathons & more</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">education</span>
+        <span class="table-value">Academic background</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">contact</span>
+        <span class="table-value">Get in touch with me</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">neofetch</span>
+        <span class="table-value">System info, hacker style 😎</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">clear</span>
+        <span class="table-value">Clear the terminal</span>
+    </div>
+    <div class="table-row">
+        <span class="table-key">repo</span>
+        <span class="table-value">View source code on GitHub</span>
+    </div>
+</div>
+
+<p class="text-comment" style="margin-top: 15px;">💡 Tip: Use ↑↓ arrows for command history, Tab for autocomplete</p>
+`,
+
+    about: () => COMMANDS_DATA.about,
+    skills: () => COMMANDS_DATA.skills,
+    experience: () => COMMANDS_DATA.experience,
+    projects: () => COMMANDS_DATA.projects,
+    achievements: () => COMMANDS_DATA.achievements,
+    education: () => COMMANDS_DATA.education,
+    contact: () => COMMANDS_DATA.contact,
+    neofetch: () => COMMANDS_DATA.neofetch,
+
+    whoami: () => `
+<span class="text-green text-bold">priyanshu</span>
+<span class="text-comment">uid=1000(priyanshu) gid=1000(developers) groups=1000(developers),27(golang),44(typescript),100(startup-founders)</span>
+`,
+
+    clear: () => {
+      output.innerHTML = "";
+      return "";
+    },
+
+    repo: () => {
+      window.open("https://github.com/PriyanshuSharma23", "_blank");
+      return `<span class="text-green">Opening GitHub profile...</span>`;
+    },
+
+    ls: () => `
+<span class="text-blue">about.md</span>    <span class="text-blue">skills.json</span>    <span class="text-blue">experience/</span>    <span class="text-blue">projects/</span>
+<span class="text-blue">achievements.txt</span>    <span class="text-blue">education.md</span>    <span class="text-blue">contact.yaml</span>
+`,
+
+    pwd: () => `<span class="text-cyan">/home/priyanshu/portfolio</span>`,
+
+    date: () => `<span class="text-fg">${new Date().toString()}</span>`,
+
+    echo: (args) => `<span class="text-fg">${args.join(" ")}</span>`,
+
+    cat: (args) => {
+      const fileMap = {
+        "about.md": "about",
+        "skills.json": "skills",
+        "achievements.txt": "achievements",
+        "education.md": "education",
+        "contact.yaml": "contact",
+      };
+      const file = args[0];
+      if (fileMap[file]) {
+        return commands[fileMap[file]]();
+      }
+      return `<span class="text-red">cat: ${file || "no file specified"}: No such file or directory</span>`;
+    },
+
+    sudo: () => `<span class="text-red">Nice try! 😏 But you don't need sudo to view my portfolio.</span>
+<span class="text-comment">Try 'help' instead!</span>`,
+
+    vim: () => `<span class="text-green">Ah, I see you're a person of culture! 🎩</span>
+<span class="text-comment">But this terminal is read-only. Type 'help' to explore!</span>`,
+
+    nvim: () => commands.vim(),
+
+    exit: () => `<span class="text-yellow">Thanks for visiting! 👋</span>
+<span class="text-comment">Feel free to reach out: inbox.priyanshu@gmail.com</span>`,
+
+    man: (args) => {
+      if (args[0] === "priyanshu") {
+        return commands.about();
+      }
+      return `<span class="text-comment">No manual entry for ${args[0] || "unknown"}</span>
+<span class="text-comment">Try: man priyanshu</span>`;
+    },
+
+    hire: () => `
+<span class="text-green text-bold glow">🎉 Great choice!</span>
+
+<span class="text-fg">Let's talk:</span>
+<span class="text-cyan">📧 inbox.priyanshu@gmail.com</span>
+<span class="text-cyan">📞 +91-9871010603</span>
+
+<span class="text-comment">I'm ready to build something amazing! 🚀</span>
+`,
+
+    coffee: () => `
+<span class="text-yellow">
+   ( (
+    ) )
+  ........
+  |      |]
+  \\      /
+   \`----'
+</span>
+<span class="text-comment">Coffee is the fuel that powers great code! ☕</span>
+`,
+
+    "": () => "",
+  };
+
+  // Available commands for autocomplete
+  const availableCommands = Object.keys(commands).filter((cmd) => cmd !== "");
+
+  // Process command
+  function processCommand(cmd) {
+    const parts = cmd.trim().split(" ");
+    const command = parts[0].toLowerCase();
+    const args = parts.slice(1);
+
+    if (commands[command]) {
+      if (typeof commands[command] === "function") {
+        return commands[command](args);
+      }
+      return commands[command];
+    }
+
+    if (command) {
+      return `<span class="text-red">Command not found: ${command}</span>
+<span class="text-comment">Type 'help' to see available commands.</span>`;
+    }
+    return "";
+  }
+
+  // Add output to terminal
+  function addOutput(html, showPrompt = true) {
+    if (html) {
+      const div = document.createElement("div");
+      div.className = "output-block";
+      div.innerHTML = html;
+      output.appendChild(div);
+    }
+    scrollToBottom();
+  }
+
+  // Add command line to output
+  function addCommandLine(cmd) {
+    const div = document.createElement("div");
+    div.className = "command-line";
+    div.innerHTML = `
+        <span class="prompt">
+            <span style="color: #9ece6a; font-weight: 600;">priyanshu</span><span style="color: #565f89;">@</span><span style="color: #bb9af7; font-weight: 600;">dev</span>
+            <span style="color: #565f89;">:</span><span style="color: #7dcfff; font-weight: 600;">~</span><span style="color: #565f89; margin-left: 4px;">$</span>
+        </span>
+        <span style="color: #c0caf5;">${cmd.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>
+    `;
+    output.appendChild(div);
+  }
+
+  // Escape HTML
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Scroll to bottom
+  function scrollToBottom() {
+    const terminalBody = document.querySelector(".terminal-body");
+    terminalBody.scrollTop = terminalBody.scrollHeight;
+  }
+
+  // Run command (for clickable suggestions)
+  function runCommand(cmd) {
+    input.value = cmd;
+    handleCommand();
+  }
+
+  // Handle command submission
+  function handleCommand() {
+    const cmd = input.value;
+
+    // Add to history
+    if (cmd.trim()) {
+      commandHistory.push(cmd);
+      historyIndex = commandHistory.length;
+    }
+
+    // Show command
+    addCommandLine(cmd);
+
+    // Process and show output
+    const result = processCommand(cmd);
+    addOutput(result);
+
+    // Clear input
+    input.value = "";
+  }
+
+  // Autocomplete
+  function autocomplete(partial) {
+    const matches = availableCommands.filter((cmd) =>
+      cmd.startsWith(partial.toLowerCase())
+    );
+    if (matches.length === 1) {
+      return matches[0];
+    }
+    return partial;
+  }
+
+  // Event listeners
+  input.addEventListener("keydown", (e) => {
+    switch (e.key) {
+      case "Enter":
+        handleCommand();
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          input.value = commandHistory[historyIndex];
+        }
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          input.value = commandHistory[historyIndex];
+        } else {
+          historyIndex = commandHistory.length;
+          input.value = "";
+        }
+        break;
+      case "Tab":
+        e.preventDefault();
+        input.value = autocomplete(input.value);
+        break;
+      case "l":
+        if (e.ctrlKey) {
+          e.preventDefault();
+          commands.clear();
+        }
+        break;
+    }
+  });
+
+  // Focus input on click (but not when selecting text)
+  document.querySelector(".terminal-body").addEventListener("click", (e) => {
+    // Don't focus if user is selecting text
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+      return;
+    }
+    // Don't focus if clicking on a link or button
+    if (e.target.tagName === 'A' || e.target.closest('a') || e.target.classList.contains('suggestion')) {
+      return;
+    }
+    input.focus();
+  });
+
+  // Make runCommand available globally for onclick handlers
+  window.runCommand = runCommand;
+
+  // Initial boot sequence
+  function bootSequence() {
+    const bootMessages = [
+      {
+        text: '<span class="text-comment">[    0.000000] Initializing portfolio kernel...</span>',
+        delay: 0,
+      },
+      {
+        text: '<span class="text-comment">[    0.001337] Loading modules: golang, typescript, react...</span>',
+        delay: 100,
+      },
+      {
+        text: '<span class="text-comment">[    0.004242] Mounting /dev/skills...</span>',
+        delay: 200,
+      },
+      {
+        text: '<span class="text-comment">[    0.006969] Starting experience daemon...</span>',
+        delay: 300,
+      },
+      {
+        text: '<span class="text-green">[    0.010000] System ready. Welcome! 🚀</span>',
+        delay: 400,
+      },
+    ];
+
+    bootMessages.forEach((msg, index) => {
+      setTimeout(() => {
+        const div = document.createElement("div");
+        div.className = "output-line";
+        div.innerHTML = msg.text;
+        output.appendChild(div);
+        scrollToBottom();
+
+        // Show welcome message after boot
+        if (index === bootMessages.length - 1) {
+          setTimeout(() => {
+            addOutput(`
+${SMALL_LOGO}
+<span class="text-fg">Welcome to my interactive portfolio! 🎉</span>
+<span class="text-comment">I'm <span class="text-green text-bold">Priyanshu Sharma</span> — Full-Stack Engineer & Systems Developer</span>
+
+<span class="text-yellow">Type</span> <span class="text-cyan text-bold">help</span> <span class="text-yellow">to see available commands, or click one below:</span>
+
+<div class="suggestions">
+    <span class="suggestion" onclick="runCommand('about')">about</span>
+    <span class="suggestion" onclick="runCommand('skills')">skills</span>
+    <span class="suggestion" onclick="runCommand('experience')">experience</span>
+    <span class="suggestion" onclick="runCommand('projects')">projects</span>
+    <span class="suggestion" onclick="runCommand('achievements')">achievements</span>
+    <span class="suggestion" onclick="runCommand('education')">education</span>
+    <span class="suggestion" onclick="runCommand('contact')">contact</span>
+    <span class="suggestion" onclick="runCommand('neofetch')">neofetch</span>
+    <span class="suggestion" onclick="runCommand('whoami')">whoami</span>
+</div>
+`);
+            input.focus();
+          }, 200);
+        }
+      }, msg.delay);
+    });
+  }
+
+  // Start boot sequence
+  bootSequence();
+</script>
+
+<style>
+  .terminal-container {
+    width: 100%;
+    max-width: 1100px;
+    height: 90vh;
+    max-height: 800px;
+    background: var(--bg-dark);
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      0 25px 50px -12px rgba(0, 0, 0, 0.8),
+      0 0 100px rgba(122, 162, 247, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: terminalBoot 0.5s ease-out;
+  }
+
+  @keyframes terminalBoot {
+    0% {
+      opacity: 0;
+      transform: scale(0.95) translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* Terminal Header */
+  .terminal-header {
+    background: var(--bg-darker);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--bg-highlight);
+    user-select: none;
+  }
+
+  .terminal-buttons {
+    display: flex;
+    gap: 8px;
+    margin-right: 16px;
+  }
+
+  .terminal-buttons .btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .terminal-buttons .btn:hover {
+    opacity: 0.8;
+  }
+
+  .terminal-buttons .close {
+    background: var(--red);
+  }
+  .terminal-buttons .minimize {
+    background: var(--yellow);
+  }
+  .terminal-buttons .maximize {
+    background: var(--green);
+  }
+
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    color: var(--comment);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .terminal-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .terminal-tabs .tab {
+    padding: 4px 12px;
+    background: var(--bg-highlight);
+    color: var(--fg-dark);
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .terminal-tabs .tab.active {
+    background: var(--blue0);
+    color: var(--fg);
+  }
+
+  /* Terminal Body */
+  .terminal-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: 14px;
+    line-height: 1.6;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg-highlight) transparent;
+  }
+
+  .terminal-body::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .terminal-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .terminal-body::-webkit-scrollbar-thumb {
+    background: var(--bg-highlight);
+    border-radius: 4px;
+  }
+
+  .terminal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--comment);
+  }
+
+  /* Output styling */
+  :global(.output) {
+    margin-bottom: 10px;
+  }
+
+  :global(.output-line) {
+    margin-bottom: 2px;
+    word-wrap: break-word;
+  }
+
+  :global(.output-block) {
+    margin: 10px 0;
+  }
+
+  /* Command prompt styling */
+  :global(.command-line) {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+
+  .prompt {
+    white-space: nowrap;
+    margin-right: 8px;
+  }
+
+  .prompt .user {
+    color: var(--green);
+    font-weight: 600;
+  }
+  .prompt .at {
+    color: var(--comment);
+  }
+  .prompt .host {
+    color: var(--magenta);
+    font-weight: 600;
+  }
+  .prompt .colon {
+    color: var(--comment);
+  }
+  .prompt .path {
+    color: var(--cyan);
+    font-weight: 600;
+  }
+  .prompt .dollar {
+    color: var(--comment);
+    margin-left: 4px;
+  }
+
+  :global(.command-text) {
+    color: #c0caf5 !important;
+  }
+
+  /* Input line */
+  .input-line {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  #command-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #c0caf5;
+    font-family: inherit;
+    font-size: inherit;
+    caret-color: #9ece6a;
+  }
+
+  .cursor {
+    display: none;
+  }
+
+  /* Status Bar */
+  .terminal-statusbar {
+    background: var(--blue0);
+    padding: 4px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--fg);
+  }
+
+  .status-left,
+  .status-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .git-branch {
+    color: var(--bg-dark);
+    background: var(--green);
+    padding: 1px 8px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+
+  .separator {
+    color: var(--fg-dark);
+    opacity: 0.5;
+  }
+
+  .lang {
+    color: var(--fg);
+  }
+
+  .help-hint {
+    color: var(--fg-dark);
+  }
+
+  .help-hint .cmd {
+    color: var(--yellow);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  /* ASCII Art */
+  :global(.ascii-art) {
+    color: var(--blue);
+    line-height: 1.2;
+    font-size: 12px;
+    white-space: pre;
+    margin: 10px 0;
+  }
+
+  /* Section Headers */
+  :global(.section-header) {
+    color: var(--magenta);
+    font-weight: 700;
+    margin: 15px 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed var(--bg-highlight);
+  }
+
+  /* Lists */
+  :global(.list-item) {
+    padding-left: 20px;
+    position: relative;
+    margin: 4px 0;
+  }
+
+  :global(.list-item::before) {
+    content: "▸";
+    position: absolute;
+    left: 5px;
+    color: var(--green);
+  }
+
+  /* Cards/Boxes */
+  :global(.card) {
+    background: var(--bg-darker);
+    border: 1px solid var(--bg-highlight);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    border-left: 3px solid var(--blue);
+  }
+
+  :global(.card-title) {
+    color: var(--blue);
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  :global(.card-subtitle) {
+    color: var(--comment);
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  :global(.card-content) {
+    color: var(--fg-dark);
+  }
+
+  /* Tags */
+  :global(.tag) {
+    display: inline-block;
+    background: var(--bg-highlight);
+    color: var(--cyan);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin: 2px;
+  }
+
+  /* Table */
+  :global(.table) {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  :global(.table-row) {
+    display: flex;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--bg-highlight);
+  }
+
+  :global(.table-row:last-child) {
+    border-bottom: none;
+  }
+
+  :global(.table-key) {
+    color: var(--yellow);
+    width: 150px;
+    flex-shrink: 0;
+  }
+
+  :global(.table-value) {
+    color: var(--fg-dark);
+  }
+
+  /* Progress bar */
+  :global(.progress-bar) {
+    display: flex;
+    align-items: center;
+    margin: 3px 0;
+  }
+
+  :global(.progress-label) {
+    width: 120px;
+    color: var(--fg-dark);
+  }
+
+  :global(.progress-track) {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-highlight);
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 200px;
+  }
+
+  :global(.progress-fill) {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  :global(.progress-value) {
+    margin-left: 10px;
+    color: var(--comment);
+    font-size: 12px;
+  }
+
+  /* Command suggestions */
+  :global(.suggestions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  :global(.suggestion) {
+    background: var(--bg-highlight);
+    color: var(--yellow);
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  :global(.suggestion:hover) {
+    background: var(--bg-visual);
+    border-color: var(--yellow);
+    transform: translateY(-1px);
+  }
+
+  /* Timeline */
+  :global(.timeline-item) {
+    position: relative;
+    padding-left: 25px;
+    padding-bottom: 20px;
+    border-left: 2px solid var(--bg-highlight);
+    margin-left: 10px;
+  }
+
+  :global(.timeline-item:last-child) {
+    border-left: 2px solid transparent;
+  }
+
+  :global(.timeline-item::before) {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    background: var(--blue);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--blue);
+  }
+
+  :global(.timeline-title) {
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  :global(.timeline-subtitle) {
+    color: var(--comment);
+    font-size: 12px;
+  }
+
+  :global(.timeline-content) {
+    color: var(--fg-dark);
+    margin-top: 5px;
+  }
+
+  /* Achievement badges */
+  :global(.badge) {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(135deg, var(--bg-highlight), var(--bg-visual));
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin: 3px;
+    font-size: 12px;
+    border: 1px solid var(--yellow);
+  }
+
+  :global(.badge-icon) {
+    font-size: 14px;
+  }
+
+  /* Neofetch style system info */
+  :global(.neofetch) {
+    display: flex;
+    gap: 30px;
+    margin: 15px 0;
+  }
+
+  :global(.neofetch-logo) {
+    color: var(--blue);
+    white-space: pre;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  :global(.neofetch-info) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  :global(.neofetch-title) {
+    color: var(--green);
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  :global(.neofetch-separator) {
+    color: var(--comment);
+    margin-bottom: 10px;
+  }
+
+  :global(.neofetch-row) {
+    display: flex;
+    margin: 2px 0;
+  }
+
+  :global(.neofetch-label) {
+    color: var(--blue);
+    font-weight: 600;
+    width: 100px;
+  }
+
+  :global(.neofetch-value) {
+    color: var(--fg-dark);
+  }
+
+  :global(.color-blocks) {
+    display: flex;
+    gap: 2px;
+    margin-top: 10px;
+  }
+
+  :global(.color-block) {
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .terminal-container {
+      height: 95vh;
+      max-height: none;
+      border-radius: 8px;
+    }
+
+    .terminal-body {
+      font-size: 13px;
+      padding: 15px;
+    }
+
+    .terminal-title {
+      font-size: 11px;
+    }
+
+    :global(.ascii-art) {
+      font-size: 8px;
+    }
+
+    :global(.table-key) {
+      width: 100px;
+    }
+
+    :global(.progress-label) {
+      width: 80px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .terminal-header {
+      padding: 8px 12px;
+    }
+
+    .terminal-title {
+      display: none;
+    }
+
+    .terminal-body {
+      font-size: 12px;
+      padding: 10px;
+    }
+
+    :global(.ascii-art) {
+      font-size: 6px;
+    }
+
+    :global(.card) {
+      padding: 10px;
+    }
+  }
+</style>
+

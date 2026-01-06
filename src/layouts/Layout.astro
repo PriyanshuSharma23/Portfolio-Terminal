@@ -1,0 +1,159 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* Tokyo Night Color Palette */
+  :root {
+    --bg-dark: #1a1b26;
+    --bg-darker: #16161e;
+    --bg-highlight: #292e42;
+    --bg-visual: #33467c;
+    --fg: #c0caf5;
+    --fg-dark: #a9b1d6;
+    --fg-gutter: #3b4261;
+    --comment: #565f89;
+    --dark3: #545c7e;
+    --dark5: #737aa2;
+    --blue0: #3d59a1;
+    --blue: #7aa2f7;
+    --cyan: #7dcfff;
+    --blue1: #2ac3de;
+    --blue2: #0db9d7;
+    --blue5: #89ddff;
+    --blue6: #b4f9f8;
+    --blue7: #394b70;
+    --magenta: #bb9af7;
+    --magenta2: #ff007c;
+    --purple: #9d7cd8;
+    --orange: #ff9e64;
+    --yellow: #e0af68;
+    --green: #9ece6a;
+    --green1: #73daca;
+    --green2: #41a6b5;
+    --teal: #1abc9c;
+    --red: #f7768e;
+    --red1: #db4b4b;
+    --terminal-black: #414868;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
+    background: linear-gradient(
+      135deg,
+      var(--bg-darker) 0%,
+      var(--bg-dark) 50%,
+      #1e2030 100%
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  /* Scanline effect */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.1) 0px,
+      rgba(0, 0, 0, 0.1) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.3;
+  }
+
+  /* Text Colors */
+  .text-green { color: var(--green); }
+  .text-blue { color: var(--blue); }
+  .text-cyan { color: var(--cyan); }
+  .text-magenta { color: var(--magenta); }
+  .text-yellow { color: var(--yellow); }
+  .text-orange { color: var(--orange); }
+  .text-red { color: var(--red); }
+  .text-comment { color: var(--comment); }
+  .text-fg { color: var(--fg); }
+  .text-bold { font-weight: 700; }
+  .text-dim { opacity: 0.7; }
+
+  /* Glow effect */
+  .glow {
+    text-shadow: 0 0 10px currentColor;
+  }
+
+  /* Links */
+  .link {
+    color: var(--blue);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--blue);
+  }
+
+  .link:hover {
+    color: var(--cyan);
+    border-color: var(--cyan);
+  }
+
+  /* Selection */
+  ::selection {
+    background: var(--bg-visual);
+    color: var(--fg);
+  }
+
+  *:focus {
+    outline: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    body {
+      padding: 10px;
+    }
+  }
+</style>
+

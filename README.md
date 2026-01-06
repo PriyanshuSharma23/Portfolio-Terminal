@@ -1,143 +1,207 @@
-# 🖥️ Terminal Portfolio — Priyanshu Sharma
+# Terminal Portfolio - Priyanshu Sharma
 
-A hacker-style, interactive terminal portfolio built with vanilla HTML, CSS, and JavaScript. Features the beautiful **Tokyo Night** color theme.
-
-![Terminal Portfolio Preview](https://img.shields.io/badge/Theme-Tokyo%20Night-7aa2f7?style=for-the-badge)
-![Made with Love](https://img.shields.io/badge/Made%20with-❤️-f7768e?style=for-the-badge)
-
-## ⚡ Features
-
-- **Interactive Terminal UI** — Type commands like a real terminal
-- **Tokyo Night Theme** — Beautiful dark theme with carefully chosen colors
-- **Responsive Design** — Works on desktop and mobile
-- **Command History** — Navigate with ↑↓ arrow keys
-- **Tab Autocomplete** — Press Tab to autocomplete commands
-- **Clickable Suggestions** — Click on command chips for quick navigation
-- **Boot Sequence Animation** — Cool startup animation
-- **Neofetch Style Display** — Show system info in hacker style
+An interactive terminal-style portfolio built with [Astro](https://astro.build) and MDX content collections. Tokyo Night theme. ⚡
 
 ## 🚀 Quick Start
 
-Simply open `index.html` in your browser — no build tools required!
-
 ```bash
-# Clone or download, then:
-open index.html
+# Install dependencies
+npm install
 
-# Or serve with any static server:
-npx serve .
-python -m http.server 8000
-```
+# Start dev server
+npm run dev
 
-## 💻 Available Commands
+# Build for production
+npm run build
 
-| Command | Description |
-|---------|-------------|
-| `help` | Show all available commands |
-| `about` | Learn about me and what I do |
-| `skills` | View my technical skills & stack |
-| `experience` | Professional work experience |
-| `projects` | Featured side projects |
-| `achievements` | Awards, hackathons & more |
-| `education` | Academic background |
-| `contact` | Get in touch with me |
-| `neofetch` | System info, hacker style 😎 |
-| `clear` | Clear the terminal |
-| `repo` | Open GitHub profile |
-
-### 🎮 Hidden Commands
-
-Try these for some fun:
-- `sudo`
-- `vim` / `nvim`
-- `coffee`
-- `hire`
-- `man priyanshu`
-- `ls`, `pwd`, `date`
-
-## 🎨 Color Palette (Tokyo Night)
-
-```css
---bg-dark: #1a1b26      /* Background */
---fg: #c0caf5           /* Foreground */
---red: #f7768e          /* Errors, close button */
---orange: #ff9e64       /* Warnings */
---yellow: #e0af68       /* Highlights */
---green: #9ece6a        /* Success, prompt */
---cyan: #7dcfff         /* Links, paths */
---blue: #7aa2f7         /* Primary accent */
---magenta: #bb9af7      /* Secondary accent */
+# Preview production build
+npm run preview
 ```
 
 ## 📁 Project Structure
 
 ```
-Portfolio/
-├── index.html      # Main HTML file
-├── styles.css      # Tokyo Night themed styles
-├── script.js       # Terminal logic & content
-└── README.md       # This file
+src/
+├── content/           # 📝 Edit your content here!
+│   ├── about/
+│   │   └── about.mdx
+│   ├── skills/
+│   │   ├── languages.mdx
+│   │   ├── frameworks.mdx
+│   │   ├── backend.mdx
+│   │   └── systems.mdx
+│   ├── experience/
+│   │   ├── tbo.mdx
+│   │   ├── brdsai.mdx
+│   │   └── flownote.mdx
+│   ├── projects/
+│   │   ├── flashlog.mdx
+│   │   ├── cengine.mdx
+│   │   ├── greenlight.mdx
+│   │   └── token-bucket.mdx
+│   ├── achievements/
+│   │   └── *.mdx
+│   ├── education/
+│   │   └── nsut.mdx
+│   ├── contact/
+│   │   └── contact.mdx
+│   └── neofetch/
+│       └── neofetch.mdx
+├── components/
+│   └── Terminal.astro
+├── layouts/
+│   └── Layout.astro
+├── pages/
+│   └── index.astro
+└── content.config.ts  # Schema definitions
 ```
 
-## ✨ Customization
+## ✏️ Editing Content
 
-### Changing Colors
+### About Section (`src/content/about/about.mdx`)
 
-Edit the CSS variables in `styles.css`:
+```mdx
+---
+name: Your Name
+title: Your Title & Role
+location: City, Country
+highlights:
+  - "**Skill 1** description"
+  - "**Skill 2** description"
+differentiators:
+  - "Thing 1"
+  - "Thing 2"
+---
 
-```css
-:root {
-    --bg-dark: #1a1b26;
-    --blue: #7aa2f7;
-    /* ... */
-}
+Your bio text here. Use **bold** for emphasis.
 ```
 
-### Adding New Commands
+### Adding Experience (`src/content/experience/`)
 
-Add a new command in `script.js`:
+Create a new `.mdx` file:
 
-```javascript
-const commands = {
-    // ... existing commands
-    
-    mycommand: () => `
-        <div class="section-header">My Custom Section</div>
-        <p class="text-fg">Your content here!</p>
-    `,
-};
+```mdx
+---
+title: Job Title
+company: Company Name
+companyType: "🚀 Company Type"
+location: City
+period: Jan 2024 – Present
+order: 1  # Lower = appears first
+tags:
+  - Tech1
+  - Tech2
+---
+
+Job description paragraph.
+
+- Bullet point 1
+- Bullet point 2
 ```
 
-### Updating Content
+### Adding Projects (`src/content/projects/`)
 
-All portfolio content is in `script.js` within the `commands` object. Each command returns HTML that gets rendered in the terminal.
+```mdx
+---
+title: "🔥 Project Name"
+subtitle: Tech • Stack • Used
+color: green  # green, cyan, magenta, orange, blue, yellow, red
+order: 1
+tags:
+  - Tag1
+  - Tag2
+---
 
-## 🔧 Tech Stack
+Project description.
 
-- **HTML5** — Semantic structure
-- **CSS3** — Custom properties, flexbox, animations
-- **Vanilla JS** — No dependencies!
-- **JetBrains Mono** — Beautiful monospace font
+- Feature 1
+- Feature 2
+```
 
-## 📱 Responsive
+### Skills (`src/content/skills/`)
 
-The terminal adapts to different screen sizes:
-- Desktop: Full terminal experience
-- Tablet: Slightly condensed
-- Mobile: Touch-friendly with adjusted font sizes
+For languages with progress bars:
 
-## 🙏 Credits
+```mdx
+---
+category: Languages
+color: yellow
+order: 1
+items:
+  - name: Go
+    level: 95
+    label: Expert
+  - name: TypeScript
+    level: 90
+    label: Advanced
+---
+```
 
-- Color Theme: [Tokyo Night](https://github.com/enkia/tokyo-night-vscode-theme)
-- Font: [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
-- Inspiration: Linux terminals, neofetch, hacker culture
+For tag-based skills:
+
+```mdx
+---
+category: Frameworks
+color: cyan
+order: 2
+tags:
+  - React
+  - Next.js
+  - Tailwind
+---
+```
+
+### Contact (`src/content/contact/contact.mdx`)
+
+```mdx
+---
+email: your@email.com
+phone: "+1-234-567-8900"
+github: github.com/yourusername
+location: Your City
+lookingFor:
+  - text: Backend roles
+    color: green
+  - text: Startup opportunities
+    color: cyan
+---
+```
+
+### Neofetch (`src/content/neofetch/neofetch.mdx`)
+
+```mdx
+---
+rows:
+  - label: OS
+    value: Developer v2.0
+  - label: Host
+    value: Your City
+  - label: Theme
+    value: Tokyo Night 🌃
+---
+```
+
+## 🎨 Customization
+
+### Colors
+
+Available colors: `green`, `cyan`, `magenta`, `orange`, `blue`, `yellow`, `red`
+
+### Fonts
+
+The portfolio uses JetBrains Mono. Change in `src/layouts/Layout.astro`.
+
+### Theme
+
+Tokyo Night colors are defined in `src/layouts/Layout.astro` CSS variables.
+
+## 📦 Tech Stack
+
+- [Astro](https://astro.build) - Static Site Generator
+- [MDX](https://mdxjs.com) - Markdown with JSX
+- Tokyo Night Theme
+- JetBrains Mono Font
 
 ## 📄 License
 
-MIT License — Feel free to use this as a template for your own portfolio!
-
----
-
-**Built with ❤️ by Priyanshu Sharma**
-
-📧 inbox.priyanshu@gmail.com | 🐙 [GitHub](https://github.com/PriyanshuSharma23)
+MIT
