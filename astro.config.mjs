@@ -4,6 +4,6 @@ import mdx from '@astrojs/mdx';
 export default defineConfig({
   integrations: [mdx()],
   output: 'static',
-  site: 'https://priyanshusharma23.github.io',
+  site: 'https://priyanshusharma23.github.io/Portfolio-Terminal',
 });
 
